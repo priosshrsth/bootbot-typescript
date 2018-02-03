@@ -1,15 +1,25 @@
-'use strict';
-const Chat = require('./Chat');
-const Conversation = require('./Conversation');
-const EventEmitter = require('eventemitter3');
-const express = require('express');
-const bodyParser = require('body-parser');
-const crypto = require('crypto');
-const fetch = require('node-fetch');
-const normalizeString = require('./utils/normalize-string');
+import { Chat } from './Chat';
+import { Conversation } from './Conversation';
+import { EventEmitter }  from 'eventemitter3';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as crypto from 'crypto';
+import * as fetch from 'node-fetch';
+import normalizeString from './utils/normalize-string';
 
-class BootBot extends EventEmitter {
-  constructor(options) {
+export class BootBot extends EventEmitter {
+
+  private accessToken;
+  private verifyToken;
+  private appSecret;
+  private broadcastEchoes;
+  private app;
+  private server;
+  private webhook;
+  private _hearMap;
+  private _conversations;
+
+  constructor(options: any) {
     super();
     if (!options || (options && (!options.accessToken || !options.verifyToken || !options.appSecret))) {
       throw new Error('You need to specify an accessToken, verifyToken and appSecret');
@@ -26,7 +36,7 @@ class BootBot extends EventEmitter {
     this._conversations = [];
   }
 
-  start(port) {
+  start(port): void {
     this._initWebhook();
     this.app.set('port', port || 3000);
     this.server = this.app.listen(this.app.get('port'), () => {
@@ -36,12 +46,12 @@ class BootBot extends EventEmitter {
     });
   }
 
-  close() {
+  close(): void {
     this.server.close();
   }
 
-  sendTextMessage(recipientId, text, quickReplies, options) {
-    const message = { text };
+  sendTextMessage(recipientId, text: string, quickReplies: any, options) {
+    const message: any = { text };
     const formattedQuickReplies = this._formatQuickReplies(quickReplies);
     if (formattedQuickReplies && formattedQuickReplies.length > 0) {
       message.quick_replies = formattedQuickReplies;
@@ -50,7 +60,7 @@ class BootBot extends EventEmitter {
   }
 
   sendButtonTemplate(recipientId, text, buttons, options) {
-    const payload = {
+    const payload: any = {
       template_type: 'button',
       text
     };
@@ -60,7 +70,7 @@ class BootBot extends EventEmitter {
   }
 
   sendGenericTemplate(recipientId, elements, options) {
-    const payload = {
+    const payload: any = {
       template_type: 'generic',
       elements
     };
@@ -69,7 +79,7 @@ class BootBot extends EventEmitter {
   }
 
   sendListTemplate(recipientId, elements, buttons, options) {
-    const payload = {
+    const payload: any = {
       template_type: 'list',
       elements
     };
@@ -89,7 +99,7 @@ class BootBot extends EventEmitter {
   }
 
   sendAttachment(recipientId, type, url, quickReplies, options) {
-    const message = {
+    const message: any = {
       attachment: {
         type,
         payload: { url }
@@ -102,7 +112,7 @@ class BootBot extends EventEmitter {
     return this.sendMessage(recipientId, message, options);
   }
 
-  sendAction(recipientId, action, options) {
+  sendAction(recipientId, action?, options?) {
     const recipient = this._createRecipient(recipientId);
     return this.sendRequest({
       recipient,
@@ -136,7 +146,7 @@ class BootBot extends EventEmitter {
     return req();
   }
 
-  sendRequest(body, endpoint, method) {
+  sendRequest(body, endpoint?, method?) {
     endpoint = endpoint || 'messages';
     method = method || 'POST';
     return fetch(`https://graph.facebook.com/v2.6/me/${endpoint}?access_token=${this.accessToken}`, {
@@ -158,14 +168,14 @@ class BootBot extends EventEmitter {
   }
 
   sendThreadRequest(body, method) {
-    console.warning(`
+    console.log(`
       sendThreadRequest: Dreprecation warning. Thread API has been replaced by the Messenger Profile API.
       Please update your code to use the sendProfileRequest() method instead.`
     );
     return this.sendRequest(body, 'thread_settings', method);
   }
 
-  sendProfileRequest(body, method) {
+  sendProfileRequest(body, method?) {
     return this.sendRequest(body, 'messenger_profile', method);
   }
 
@@ -321,7 +331,7 @@ class BootBot extends EventEmitter {
     });
   }
 
-  _handleEvent(type, event, data) {
+  _handleEvent(type, event, data?) {
     const recipient = (type === 'authentication' && !event.sender) ? { user_ref: event.optin.user_ref } : event.sender.id;
     const chat = new Chat(this, recipient);
     this.emit(type, event, chat, data);
@@ -472,5 +482,3 @@ class BootBot extends EventEmitter {
     }
   }
 }
-
-module.exports = BootBot;

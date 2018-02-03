@@ -1,7 +1,7 @@
 'use strict';
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const BootBot = require('../lib/BootBot');
+const BootBot = require('../dist/lib/BootBot').BootBot;
 
 describe('BootBot', () => {
   let server;
@@ -18,6 +18,7 @@ describe('BootBot', () => {
     bot = new BootBot(options);
     server = sinon.fakeServer.create();
     server.autoRespond = true;
+
   });
 
   afterEach(() => {

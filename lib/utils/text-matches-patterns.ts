@@ -1,5 +1,4 @@
-'use strict';
-module.exports = (text, patterns) => {
+export default function textMatchesPatterns(text, patterns) {
   const keywords = Array.isArray(patterns) ? patterns : [ patterns ];
   for (let i = 0; i < keywords.length; i += 1) {
     const keyword = keywords[i];

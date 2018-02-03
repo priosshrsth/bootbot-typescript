@@ -1,8 +1,17 @@
-'use strict';
-const Chat = require('./Chat');
-const textMatchesPatterns = require('./utils/text-matches-patterns');
+import { Chat } from './Chat';
+import textMatchesPatterns from './utils/text-matches-patterns';
 
-class Conversation extends Chat {
+export class Conversation extends Chat {
+
+  public bot;
+  public userId;
+
+  private context;
+  private waitingForAnswer;
+  private listeningAnswer;
+  private listeningCallbacks;
+  private active: boolean;
+
   constructor(bot, userId) {
     super(bot, userId);
     this.bot = bot;
@@ -113,7 +122,7 @@ class Conversation extends Chat {
     return this.end();
   }
 
-  isActive() {
+  isActive(): boolean {
     return this.active;
   }
 
@@ -147,5 +156,3 @@ class Conversation extends Chat {
     return this.context[property];
   }
 }
-
-module.exports = Conversation;

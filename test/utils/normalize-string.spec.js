@@ -1,6 +1,6 @@
 'use strict';
 const expect = require('chai').expect;
-const normalizeString = require('../../lib/utils/normalize-string');
+const normalizeString = require('../../dist/lib/utils/normalize-string').default;
 
 describe('Utils: normalizeString', () => {
   it('capitalizes and removes spaces and special characters from a string', () => {

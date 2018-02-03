@@ -1,6 +1,6 @@
 'use strict';
 const expect = require('chai').expect;
-const textMatchesPatterns = require('../../lib/utils/text-matches-patterns');
+const textMatchesPatterns = require('../../dist/lib/utils/text-matches-patterns').default;
 
 describe('Utils: textMatchesPatterns', () => {
   it('matches a string against another string', () => {

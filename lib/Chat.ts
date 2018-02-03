@@ -1,7 +1,10 @@
-'use strict';
-const EventEmitter = require('eventemitter3');
+import { EventEmitter } from 'eventemitter3';
 
-class Chat extends EventEmitter {
+export class Chat extends EventEmitter {
+
+  public bot;
+  public userId;
+
   constructor(bot, userId) {
     super();
     if (!bot || !userId) {
@@ -63,5 +66,3 @@ class Chat extends EventEmitter {
     return this.bot.conversation(this.userId, factory);
   }
 }
-
-module.exports = Chat;
