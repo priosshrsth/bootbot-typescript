@@ -1,4 +1,4 @@
-export default function textMatchesPatterns(text, patterns) {
+export default function textMatchesPatterns(text, patterns): any {
   const keywords = Array.isArray(patterns) ? patterns : [ patterns ];
   for (let i = 0; i < keywords.length; i += 1) {
     const keyword = keywords[i];
