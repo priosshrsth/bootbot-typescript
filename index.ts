@@ -1,5 +1,3 @@
-import { BootBot } from './lib/BootBot';
-
-module.exports = BootBot;
-
-export default BootBot;
+export { BootBot } from './lib/BootBot';
+export { Conversation } from './lib/Conversation';
+export { Chat } from './lib/Chat';

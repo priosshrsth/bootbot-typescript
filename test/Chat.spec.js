@@ -1,8 +1,8 @@
 'use strict';
 const expect = require('chai').expect;
 const sinon = require('sinon');
-const BootBot = require('../dist/lib/BootBot').BootBot;
-const Chat = require('../dist/lib/Chat').Chat;
+const BootBot = require('../dist/index').BootBot;
+const Chat = require('../dist/index').Chat;
 
 describe('Chat', () => {
   let server;
