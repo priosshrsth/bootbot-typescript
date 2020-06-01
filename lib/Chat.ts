@@ -20,8 +20,8 @@ export class Chat extends EventEmitter {
     this.userId = userId;
   }
 
-  say(message, options: ChatOptions = {}) {
-    return this.bot.say(this.userId, message, options);
+  say(message, options?: ChatOptions) {
+    return this.bot.say(this.userId, message, options || {});
   }
 
   sendTextMessage(text, quickReplies, options: ChatOptions) {
