@@ -1,3 +1,3 @@
-export { BootBot } from './lib/BootBot';
+export { BootBot, BootBotOptions } from './lib/BootBot';
 export { Conversation } from './lib/Conversation';
-export { Chat } from './lib/Chat';
+export { Chat, ChatOptions } from './lib/Chat';

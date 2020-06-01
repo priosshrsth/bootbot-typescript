@@ -1,25 +1,35 @@
 import { Chat } from './Chat';
 import { Conversation } from './Conversation';
 import { EventEmitter }  from 'eventemitter3';
-import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as crypto from 'crypto';
 import * as fetch from 'node-fetch';
+import { Application } from 'express';
 import normalizeString from './utils/normalize-string';
 
+export interface BootBotOptions {
+  accessToken: string,
+  verifyToken: string,
+  appSecret: string,
+  webhook?: string,
+  broadcastEchoes?: boolean,
+  allowTypingIndicator?: boolean,
+}
+
+
 export class BootBot extends EventEmitter {
-
-  private accessToken;
-  private verifyToken;
+  private readonly accessToken;
+  private readonly verifyToken;
   private appSecret;
-  private broadcastEchoes;
-  private app;
-  private server;
-  private webhook;
+  private readonly broadcastEchoes;
+  private app: Application;
+  private server: Application;
+  private readonly webhook: string;
   private _hearMap;
+  private allowTypingIndicator: boolean = false;
   private _conversations;
-
-  constructor(options: any) {
+ 
+  constructor(app: Application, options: BootBotOptions) {
     super();
     if (!options || (options && (!options.accessToken || !options.verifyToken || !options.appSecret))) {
       throw new Error('You need to specify an accessToken, verifyToken and appSecret');
@@ -28,22 +38,20 @@ export class BootBot extends EventEmitter {
     this.verifyToken = options.verifyToken;
     this.appSecret = options.appSecret;
     this.broadcastEchoes = options.broadcastEchoes || false;
-    this.app = express();
+    this.app = app;
     this.webhook = options.webhook || '/webhook';
     this.webhook = this.webhook.charAt(0) !== '/' ? `/${this.webhook}` : this.webhook;
     this.app.use(bodyParser.json({ verify: this._verifyRequestSignature.bind(this) }));
     this._hearMap = [];
+    if ('allowTypingIndicator' in options) {
+      this.allowTypingIndicator = options.allowTypingIndicator;
+    }
     this._conversations = [];
   }
 
-  start(port): void {
+  start(): void {
     this._initWebhook();
-    this.app.set('port', port || 3000);
-    this.server = this.app.listen(this.app.get('port'), () => {
-      const portNum = this.app.get('port');
-      console.log('BootBot running on port', portNum);
-      console.log(`Facebook Webhook running on localhost:${portNum}${this.webhook}`);
-    });
+    console.log('BootBot running on webhook: ', this.webhook);
   }
 
   close(): void {

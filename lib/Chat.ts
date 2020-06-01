@@ -1,5 +1,11 @@
 import { EventEmitter } from 'eventemitter3';
 
+export interface ChatOptions {
+  typing?: boolean,
+  onDelivery?: Function,
+  onRead?: Function,
+}
+
 export class Chat extends EventEmitter {
 
   public bot;
@@ -14,11 +20,11 @@ export class Chat extends EventEmitter {
     this.userId = userId;
   }
 
-  say(message, options) {
+  say(message, options: ChatOptions = {}) {
     return this.bot.say(this.userId, message, options);
   }
 
-  sendTextMessage(text, quickReplies, options) {
+  sendTextMessage(text, quickReplies, options: ChatOptions) {
     return this.bot.sendTextMessage(this.userId, text, quickReplies, options);
   }
 

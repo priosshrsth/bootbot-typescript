@@ -130,7 +130,11 @@ var BootBot = /** @class */ (function (_super) {
             }
             return json;
         })); };
-        if (options && options.typing) {
+        let allowTypingIndicator = this.allowTypingIndicator;
+        if (options && 'typing' in options) {
+            allowTypingIndicator = options.allowTypingIndicator;
+        }
+        if (allowTypingIndicator) {
             var autoTimeout = (message && message.text) ? message.text.length * 10 : 1000;
             var timeout = (typeof options.typing === 'number') ? options.typing : autoTimeout;
             return this.sendTypingIndicator(recipientId, timeout).then(req);
